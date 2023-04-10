@@ -9,7 +9,6 @@ namespace Domain.Entities
         public string Name { get; set; }
         
         public string UserId { get; set; }
-        public User User { get; set; }
 
         public int CountryId { get; set; }
         public Country Country { get; set; }
