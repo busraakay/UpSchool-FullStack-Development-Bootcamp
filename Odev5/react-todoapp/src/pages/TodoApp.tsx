@@ -4,6 +4,7 @@ import { Button, Header, Input, List } from 'semantic-ui-react';
 function TodoApp() {
   const [todos, setTodos] = useState<any[]>([]);
   const [newTodo, setNewTodo] = useState('');
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
 
   const addTodo = () => {
     if (newTodo.trim() !== '') {
@@ -37,24 +38,27 @@ function TodoApp() {
   };
 
   const sortByDate = () => {
-    setTodos((prevTodos) =>
-      [...prevTodos].sort((a: any, b: any) =>
-        new Date(a.createdDate).getTime() - new Date(b.createdDate).getTime()
-      )
-    );
+    setSortOrder((prevSortOrder) => (prevSortOrder === 'asc' ? 'desc' : 'asc'));
+    setTodos((prevTodos) => {
+      const sorted = [...prevTodos].sort((a: any, b: any) => {
+        const aDate = new Date(a.createdDate).getTime();
+        const bDate = new Date(b.createdDate).getTime();
+        return sortOrder === 'asc' ? aDate - bDate : bDate - aDate;
+      });
+      return sorted;
+    });
   };
 
   const sortedTodos = [...todos].sort((a: any, b: any) => {
     const aDate = new Date(a.createdDate).getTime();
     const bDate = new Date(b.createdDate).getTime();
-    return aDate - bDate;
+    return sortOrder === 'asc' ? aDate - bDate : bDate - aDate;
   });
 
   return (
-    <div className="App" >
-     <Header as='h2' icon='pencil alternate' content='To Do App' />
+    <div className="App">
+      <Header as='h2' icon='pencil alternate' content='To Do App' />
       <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-      
         <Input
           placeholder="Add new todo..."
           value={newTodo}
@@ -80,9 +84,9 @@ function TodoApp() {
           </List.Item>
         ))}
       </List>
-
     </div>
   );
-};
+}
+
 
 export default TodoApp;
